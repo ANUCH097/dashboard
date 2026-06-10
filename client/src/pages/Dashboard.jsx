@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/immutability */
 import { useState, useEffect } from 'react'
 import axiosInstance from '../utils/axios'
@@ -8,9 +7,20 @@ import UsersChart from '../components/UsersChart'
 import TrafficChart from '../components/TrafficChart'
 import { DollarSign, Users, ShoppingCart, TrendingUp } from 'lucide-react'
 
-const Dashboard = ({ isDark }) => {
+const Dashboard = ({ isDark, activeSection }) => {
   const [analytics, setAnalytics] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (activeSection === 'dashboard') {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      const element = document.getElementById(activeSection)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' })
+      }
+    }
+  }, [activeSection])
 
   useEffect(() => {
     fetchAnalytics()
@@ -72,7 +82,7 @@ const Dashboard = ({ isDark }) => {
     <div className={`p-6 ${isDark ? 'bg-gray-900' : 'bg-gray-100'} min-h-screen`}>
 
       {/* Page Title */}
-      <div className="mb-8">
+      <div id="dashboard" className="mb-8">
         <h1 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-800'}`}>
           Dashboard Overview
         </h1>
@@ -88,18 +98,20 @@ const Dashboard = ({ isDark }) => {
         ))}
       </div>
 
-      {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      {/* Charts Row 1 - Sales */}
+      <div id="sales" className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <SalesChart data={salesData} />
-        <UsersChart data={weeklyUsers} />
+        <div id="users">
+          <UsersChart data={weeklyUsers} />
+        </div>
       </div>
 
-      {/* Charts Row 2 */}
+      {/* Charts Row 2 - Orders */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <TrafficChart data={trafficData} />
 
         {/* Recent Orders Table */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
+        <div id="orders" className="bg-white rounded-2xl shadow-md p-6">
           <h3 className="text-lg font-bold text-gray-800 mb-4">
             Recent Orders
           </h3>

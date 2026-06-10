@@ -1,16 +1,15 @@
 import { LayoutDashboard, TrendingUp, Users, ShoppingCart, X } from 'lucide-react'
 
-const Sidebar = ({ isOpen, onClose }) => {
+const Sidebar = ({ isOpen, onClose, activeSection, onSectionChange }) => {
   const menuItems = [
-    { icon: <LayoutDashboard size={20} />, label: 'Dashboard', active: true },
-    { icon: <TrendingUp size={20} />, label: 'Sales' },
-    { icon: <Users size={20} />, label: 'Users' },
-    { icon: <ShoppingCart size={20} />, label: 'Orders' },
+    { icon: <LayoutDashboard size={20} />, label: 'Dashboard', id: 'dashboard' },
+    { icon: <TrendingUp size={20} />, label: 'Sales', id: 'sales' },
+    { icon: <Users size={20} />, label: 'Users', id: 'users' },
+    { icon: <ShoppingCart size={20} />, label: 'Orders', id: 'orders' },
   ]
 
   return (
     <>
-      {/* Overlay for mobile */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
@@ -18,7 +17,6 @@ const Sidebar = ({ isOpen, onClose }) => {
         />
       )}
 
-      {/* Sidebar */}
       <aside className={`
         fixed top-0 left-0 h-full w-64 bg-gray-900 text-white z-30
         transform transition-transform duration-300
@@ -26,26 +24,23 @@ const Sidebar = ({ isOpen, onClose }) => {
         lg:translate-x-0 lg:static lg:z-auto
       `}>
 
-        {/* Logo */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
-          <h1 className="text-xl font-bold text-white">
-            Analytics
-          </h1>
-          <button
-            onClick={onClose}
-            className="lg:hidden text-gray-400 hover:text-white"
-          >
+          <h1 className="text-xl font-bold text-white">Analytics</h1>
+          <button onClick={onClose} className="lg:hidden text-gray-400 hover:text-white">
             <X size={20} />
           </button>
         </div>
 
-        {/* Menu Items */}
         <nav className="p-4">
-          {menuItems.map((item, index) => (
+          {menuItems.map((item) => (
             <button
-              key={index}
+              key={item.id}
+              onClick={() => {
+                onSectionChange(item.id)
+                onClose()
+              }}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-left transition-colors
-                ${item.active
+                ${activeSection === item.id
                   ? 'bg-blue-600 text-white'
                   : 'text-gray-400 hover:bg-gray-800 hover:text-white'
                 }`}
@@ -55,7 +50,6 @@ const Sidebar = ({ isOpen, onClose }) => {
             </button>
           ))}
         </nav>
-
       </aside>
     </>
   )
